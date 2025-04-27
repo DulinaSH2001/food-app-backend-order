@@ -1,11 +1,12 @@
-package com.order.order.Service;
+package com.order.order.Service.Impl;
 
 import com.order.order.Dto.DeliveryRequestDTO;
 import com.order.order.Dto.OrderItemDTO;
 import com.order.order.Dto.OrderRequestDTO;
 import com.order.order.Model.Order;
-
 import com.order.order.Model.OrderStatus;
+import com.order.order.Model.PaymentMethod;
+import com.order.order.Model.PaymentStatus;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,4 +28,9 @@ public interface OrderService {
     List<Order> getReadyForDeliveryOrders();
     List<Order> getTodayOrders();
     List<Order> getOrdersByRestaurantIdAndStatus(Long restaurantId, OrderStatus status);
+    
+    // Payment related methods
+    Order updatePaymentStatus(Long orderId, PaymentStatus status, String transactionId);
+    List<Order> getOrdersByPaymentStatus(PaymentStatus status);
+    List<Order> getOrdersByPaymentMethod(PaymentMethod method);
 }
