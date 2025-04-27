@@ -5,9 +5,9 @@ import com.order.order.Dto.OrderItemDTO;
 import com.order.order.Dto.OrderRequestDTO;
 import com.order.order.Model.Order;
 import com.order.order.Model.OrderStatus;
-import com.order.order.Service.OrderService;
-import com.order.order.exception.InvalidOrderException;
-import com.order.order.exception.OrderNotFoundException;
+import com.order.order.Model.PaymentMethod;
+import com.order.order.Model.PaymentStatus;
+import com.order.order.Service.Impl.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -118,5 +118,32 @@ public class OrderController {
             @PathVariable OrderStatus status) {
         List<Order> orders = orderService.getOrdersByRestaurantIdAndStatus(restaurantId, status);
         return ResponseEntity.ok(orders);
+    }
+
+    @PutMapping("/{orderId}/payment-status")
+    public ResponseEntity<Order> updatePaymentStatus(
+            @PathVariable Long orderId,
+            @RequestParam PaymentStatus status,
+            @RequestParam(required = false) String transactionId) {
+        Order updatedOrder = orderService.updatePaymentStatus(orderId, status, transactionId);
+        return ResponseEntity.ok(updatedOrder);
+    }
+
+    @GetMapping("/payment-status/{status}")
+    public ResponseEntity<List<Order>> getOrdersByPaymentStatus(@PathVariable PaymentStatus status) {
+        List<Order> orders = orderService.getOrdersByPaymentStatus(status);
+        return ResponseEntity.ok(orders);
+    }
+
+    @GetMapping("/payment-method/{method}")
+    public ResponseEntity<List<Order>> getOrdersByPaymentMethod(@PathVariable PaymentMethod method) {
+        List<Order> orders = orderService.getOrdersByPaymentMethod(method);
+        return ResponseEntity.ok(orders);
+    }
+
+    @GetMapping("/statues")
+    public ResponseEntity<List<OrderStatus>> getAllOrderStatuses() {
+        List<OrderStatus> statuses = List.of(OrderStatus.values());
+        return ResponseEntity.ok(statuses);
     }
 }

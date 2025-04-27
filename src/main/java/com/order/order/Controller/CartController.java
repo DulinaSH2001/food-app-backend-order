@@ -2,7 +2,7 @@ package com.order.order.Controller;
 
 import com.order.order.Dto.CartItemDTO;
 import com.order.order.Model.CartItem;
-import com.order.order.Service.CartService;
+import com.order.order.Service.Impl.CartService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

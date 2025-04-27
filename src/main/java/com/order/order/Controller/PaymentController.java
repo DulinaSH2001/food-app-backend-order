@@ -2,13 +2,12 @@ package com.order.order.Controller;
 
 import com.order.order.Dto.PaymentDTO;
 import com.order.order.Model.Payment;
-import com.order.order.Service.PaymentService;
+import com.order.order.Service.Impl.PaymentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

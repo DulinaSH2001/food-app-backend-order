@@ -1,5 +1,6 @@
 package com.order.order.Dto;
 
+import com.order.order.Model.PaymentMethod;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -28,4 +29,7 @@ public class OrderRequestDTO {
     @NotNull(message = "Delivery request is required")
     @Valid
     private DeliveryRequestDTO deliveryRequest;
+
+    @NotNull(message = "Payment method is required")
+    private PaymentMethod paymentMethod;
 } 

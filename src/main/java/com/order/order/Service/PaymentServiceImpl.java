@@ -1,10 +1,13 @@
 package com.order.order.Service;
 
 import com.order.order.Dto.PaymentDTO;
-import com.order.order.Model.Order;
 import com.order.order.Model.OrderStatus;
 import com.order.order.Model.Payment;
+import com.order.order.Model.PaymentStatus;
 import com.order.order.Repository.PaymentRepository;
+import com.order.order.Service.Impl.OrderService;
+import com.order.order.Service.Impl.PaymentService;
+import com.order.order.Service.Impl.StripeService;
 import com.order.order.exception.PaymentNotFoundException;
 import com.stripe.exception.StripeException;
 import lombok.RequiredArgsConstructor;
@@ -38,17 +41,17 @@ public class PaymentServiceImpl implements PaymentService {
                 .build();
 
         try {
-            // Process payment through Stripe
+           
             String paymentIntentId = stripeService.createPaymentIntent(paymentDTO);
             payment.setTransactionId(paymentIntentId);
 
-            // Confirm the payment
+            
             boolean paymentSuccessful = stripeService.confirmPayment(paymentIntentId);
 
             if (paymentSuccessful) {
                 payment.setStatus(Payment.PaymentStatus.COMPLETED);
-                // Update order status to CONFIRMED
-                orderService.updateOrderStatus(paymentDTO.getOrderId(), OrderStatus.CONFIRMED);
+              
+                orderService.updatePaymentStatus(paymentDTO.getOrderId(), PaymentStatus.COMPLETED, paymentIntentId);
             } else {
                 payment.setStatus(Payment.PaymentStatus.FAILED);
                 payment.setFailureReason("Payment processing failed");

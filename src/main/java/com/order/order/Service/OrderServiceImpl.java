@@ -6,7 +6,10 @@ import com.order.order.Dto.DeliveryRequestDTO;
 import com.order.order.Model.Order;
 import com.order.order.Model.OrderItem;
 import com.order.order.Model.OrderStatus;
+import com.order.order.Model.PaymentMethod;
+import com.order.order.Model.PaymentStatus;
 import com.order.order.Repository.OrderRepository;
+import com.order.order.Service.Impl.OrderService;
 import com.order.order.exception.OrderNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,13 +36,17 @@ public class OrderServiceImpl implements OrderService {
         order.setCustomerId(orderRequest.getCustomerId());
         order.setRestaurantId(orderRequest.getRestaurantId());
         order.setStatus(OrderStatus.PENDING);
+        order.setPaymentMethod(orderRequest.getPaymentMethod());
+        order.setPaymentStatus(PaymentStatus.PENDING);
+        
+        // Set delivery request
+        order.setDeliveryRequest(orderRequest.getDeliveryRequest());
         
         List<OrderItem> orderItems = orderRequest.getOrderItems().stream()
                 .map(this::convertToOrderItem)
                 .collect(Collectors.toList());
         order.setOrderItems(orderItems);
         
-        order.setDeliveryRequest(orderRequest.getDeliveryRequest());
         return orderRepository.save(order);
     }
 
@@ -123,6 +130,26 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> getOrdersByRestaurantIdAndStatus(Long restaurantId, OrderStatus status) {
         return orderRepository.findByRestaurantIdAndStatus(restaurantId, status);
+    }
+
+    @Override
+    public Order updatePaymentStatus(Long orderId, PaymentStatus status, String transactionId) {
+        Order order = getOrderById(orderId);
+        order.setPaymentStatus(status);
+        if (transactionId != null) {
+            order.setPaymentTransactionId(transactionId);
+        }
+        return orderRepository.save(order);
+    }
+
+    @Override
+    public List<Order> getOrdersByPaymentStatus(PaymentStatus status) {
+        return orderRepository.findByPaymentStatus(status);
+    }
+
+    @Override
+    public List<Order> getOrdersByPaymentMethod(PaymentMethod method) {
+        return orderRepository.findByPaymentMethod(method);
     }
 
     private OrderItem convertToOrderItem(OrderItemDTO dto) {

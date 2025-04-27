@@ -39,6 +39,17 @@ public class Order {
     @Embedded
     private DeliveryRequestDTO deliveryRequest;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PaymentMethod paymentMethod;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PaymentStatus paymentStatus;
+
+    @Column
+    private String paymentTransactionId;
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
@@ -48,6 +59,7 @@ public class Order {
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
+        paymentStatus = PaymentStatus.PENDING;
     }
 
     @PreUpdate

@@ -2,6 +2,8 @@ package com.order.order.Repository;
 
 import com.order.order.Model.Order;
 import com.order.order.Model.OrderStatus;
+import com.order.order.Model.PaymentMethod;
+import com.order.order.Model.PaymentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,4 +18,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByStatusAndCreatedAtBetween(OrderStatus status, LocalDateTime startDate, LocalDateTime endDate);
     List<Order> findByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
     List<Order> findByRestaurantIdAndStatus(Long restaurantId, OrderStatus status);
+    
+    // Payment related queries
+    List<Order> findByPaymentStatus(PaymentStatus status);
+    List<Order> findByPaymentMethod(PaymentMethod method);
 } 
