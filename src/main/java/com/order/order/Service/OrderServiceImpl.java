@@ -11,6 +11,7 @@ import com.order.order.Model.PaymentStatus;
 import com.order.order.Repository.OrderRepository;
 import com.order.order.Service.Impl.OrderService;
 import com.order.order.exception.OrderNotFoundException;
+import com.order.order.Util.DeliveryCalculator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
+    private static final double TAX_RATE = 0.05; // 5% tax rate
 
     @Override
     public Order createOrder(OrderRequestDTO orderRequest) {
@@ -46,6 +48,28 @@ public class OrderServiceImpl implements OrderService {
                 .map(this::convertToOrderItem)
                 .collect(Collectors.toList());
         order.setOrderItems(orderItems);
+
+        // Calculate item total
+        double itemTotal = orderItems.stream()
+                .mapToDouble(item -> item.getPrice() * item.getQuantity())
+                .sum();
+        order.setItemTotal(itemTotal);
+
+        // Calculate tax (5%)
+        double tax = itemTotal * TAX_RATE;
+        order.setTax(tax);
+
+        // Calculate delivery charges based on distance
+        double distance = DeliveryCalculator.calculateDistance(
+            orderRequest.getDeliveryRequest().getDeliveryLocation(),
+            orderRequest.getDeliveryRequest().getRestaurantLocation()
+        );
+        double deliveryCharges = DeliveryCalculator.calculateDeliveryCharges(distance);
+        order.setDeliveryCharges(deliveryCharges);
+
+        // Calculate total fee
+        double totalFee = itemTotal + tax + deliveryCharges;
+        order.setTotalFee(totalFee);
         
         return orderRepository.save(order);
     }

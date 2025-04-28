@@ -13,10 +13,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Location {
-    @Column(name = "loc_latitude")
+    @Column(name = "latitude")
     private double latitude;
     
-    @Column(name = "loc_longitude")
+    @Column(name = "longitude")
     private double longitude;
 
     public static Location fromString(String coordinates) {

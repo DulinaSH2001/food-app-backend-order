@@ -37,6 +37,11 @@ public class Order {
     private List<OrderItem> orderItems = new ArrayList<>();
 
     @Embedded
+    @AttributeOverrides({
+        @AttributeOverride(name = "deliveryAddress", column = @Column(name = "delivery_address")),
+        @AttributeOverride(name = "restaurantAddress", column = @Column(name = "restaurant_address")),
+        @AttributeOverride(name = "deliveryInstructions", column = @Column(name = "delivery_instructions"))
+    })
     private DeliveryRequestDTO deliveryRequest;
 
     @Enumerated(EnumType.STRING)
@@ -53,7 +58,20 @@ public class Order {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
     private LocalDateTime updatedAt;
+
+    @Column(nullable = false)
+    private Double itemTotal;
+
+    @Column(nullable = false)
+    private Double tax;
+
+    @Column(nullable = false)
+    private Double deliveryCharges;
+
+    @Column(nullable = false)
+    private Double totalFee;
 
     @PrePersist
     protected void onCreate() {
