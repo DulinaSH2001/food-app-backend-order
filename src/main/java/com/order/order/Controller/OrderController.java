@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import com.order.order.Service.Impl.CartService;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -25,10 +26,13 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
+    private final CartService cartService;
+
 
     @PostMapping
     public ResponseEntity<Order> createOrder(@Valid @RequestBody OrderRequestDTO orderRequest) {
         Order createdOrder = orderService.createOrder(orderRequest);
+        cartService.clearCart(createdOrder.getCustomerId(),createdOrder.getRestaurantId() );
         return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
     }
 
